@@ -1,0 +1,4 @@
+name: EtherPals
+version: '1.0'
+main: cn.etherPals.Main
+api-version: '1.21'
