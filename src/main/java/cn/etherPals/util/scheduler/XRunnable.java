@@ -39,6 +39,22 @@ public abstract class XRunnable implements Runnable {
         return setTaskWrapper(scheduler.asyncTimer(this, delayTicks, periodTicks));
     }
 
+
+    public ITaskWrapper sync() {
+        checkTaskNotNull();
+        return setTaskWrapper(scheduler.sync(this));
+    }
+
+    public ITaskWrapper sync(long delayTicks) {
+        checkTaskNotNull();
+        return setTaskWrapper(scheduler.syncLater(this, delayTicks));
+    }
+
+    public ITaskWrapper sync(long delayTicks, long periodTicks) {
+        checkTaskNotNull();
+        return setTaskWrapper(scheduler.syncTimer(this, delayTicks, periodTicks));
+    }
+
     public void cancel() {
         if (this.taskWrapper == null) return;
         this.taskWrapper.cancel();

@@ -16,13 +16,28 @@ public class BukkitScheduler implements IScheduler {
     }
 
     @Override
+    public ITaskWrapper sync(@NotNull Runnable task) {
+        return new BukkitTaskWrapper(scheduler.runTask(plugin, task));
+    }
+
+    @Override
     public ITaskWrapper async(@NotNull Runnable task) {
         return new BukkitTaskWrapper(scheduler.runTaskAsynchronously(plugin, task));
     }
 
     @Override
+    public ITaskWrapper syncLater(@NotNull Runnable task, long delayTicks) {
+        return new BukkitTaskWrapper(scheduler.runTaskLater(plugin, task, delayTicks));
+    }
+
+    @Override
     public ITaskWrapper asyncLater(@NotNull Runnable task, long delayTicks) {
         return new BukkitTaskWrapper(scheduler.runTaskLaterAsynchronously(plugin, task, delayTicks));
+    }
+
+    @Override
+    public ITaskWrapper syncTimer(@NotNull Runnable task, long delayTicks, long periodTicks) {
+        return new BukkitTaskWrapper(scheduler.runTaskTimer(plugin, task, delayTicks, periodTicks));
     }
 
     @Override
