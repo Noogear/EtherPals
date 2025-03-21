@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 public record IconParams(
@@ -20,9 +19,8 @@ public record IconParams(
         @Nullable List<String> lore,
         @Nullable NamespacedKey itemModel,
         @Nullable Integer customModelData,
-        @Nullable EnumSet<ItemFlag> itemFlags
+        @Nullable ItemFlag[] itemFlags
 ) {
-
     public ItemStack toItemStack() {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
@@ -31,10 +29,19 @@ public record IconParams(
         }
         if (lore != null) {
             List<Component> loreComponents = new ArrayList<>();
-            for(String l : lore) {
+            for (String l : lore) {
                 loreComponents.add(MiniMessage.miniMessage().deserialize(l));
             }
             meta.lore(loreComponents);
+        }
+        if (itemModel != null) {
+            meta.setItemModel(itemModel);
+        }
+        if (customModelData != null) {
+            meta.setCustomModelData(customModelData);
+        }
+        if (itemFlags != null) {
+            meta.addItemFlags(itemFlags);
         }
         item.setItemMeta(meta);
         return item;
