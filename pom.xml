@@ -59,6 +59,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>minecraft-repo</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -68,5 +72,11 @@
             <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+            <dependency>
+                <groupId>com.mojang</groupId>
+                <artifactId>authlib</artifactId>
+                <version>1.5.26</version>
+                <scope>provided</scope>
+            </dependency>
     </dependencies>
 </project>

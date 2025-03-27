@@ -1,5 +1,6 @@
 package cn.etherPals.util;
 
-public class ItemUtil {
+
+public class SkinUtil {
 
 }

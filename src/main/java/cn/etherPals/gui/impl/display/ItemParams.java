@@ -1,28 +1,26 @@
-package cn.etherPals.gui.impl.icon.display;
+package cn.etherPals.gui.impl.display;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public record IconParams(
-        @NotNull Material material,
+public record ItemParams(
         @Nullable String name,
-        @Nullable List<String> lore,
-        @Nullable NamespacedKey itemModel,
-        @Nullable Integer customModelData,
-        @Nullable ItemFlag[] itemFlags
+        @Nullable List<String> lore
 ) {
-    public ItemStack toItemStack() {
-        ItemStack item = new ItemStack(material);
+
+    public ItemStack toItemStack(Material material) {
+        ItemStack newItem = new ItemStack(material);
+        return update(newItem);
+    }
+
+    public ItemStack update(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         if (name != null) {
             meta.displayName(MiniMessage.miniMessage().deserialize(name));
@@ -33,15 +31,6 @@ public record IconParams(
                 loreComponents.add(MiniMessage.miniMessage().deserialize(l));
             }
             meta.lore(loreComponents);
-        }
-        if (itemModel != null) {
-            meta.setItemModel(itemModel);
-        }
-        if (customModelData != null) {
-            meta.setCustomModelData(customModelData);
-        }
-        if (itemFlags != null) {
-            meta.addItemFlags(itemFlags);
         }
         item.setItemMeta(meta);
         return item;
