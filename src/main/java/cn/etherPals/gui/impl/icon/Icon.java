@@ -11,7 +11,6 @@ public interface Icon {
 
     ItemStack display();
 
-
     @Nullable UUID parsePlayerId();
 
 }
