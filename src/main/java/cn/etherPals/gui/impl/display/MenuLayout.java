@@ -1,6 +1,6 @@
 package cn.etherPals.gui.impl.display;
 
-import cn.etherPals.gui.impl.icon.CommonIcon;
+import cn.etherPals.gui.impl.icon.Icon;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -11,21 +11,21 @@ import java.util.function.Supplier;
 
 public class MenuLayout {
     private List<String> layout;
-    private Map<Character, Supplier<CommonIcon>> layoutMap;
+    private Map<Character, Supplier<Icon>> layoutMap;
 
     public MenuLayout() {
         this(new ArrayList<>(), new HashMap<>());
     }
 
-    public MenuLayout(@NotNull List<String> layout, @NotNull Supplier<Map<Character, Supplier<CommonIcon>>> layoutMapSupplier) {
+    public MenuLayout(@NotNull List<String> layout, @NotNull Supplier<Map<Character, Supplier<Icon>>> layoutMapSupplier) {
         this(layout, layoutMapSupplier.get());
     }
 
-    public MenuLayout(@NotNull Supplier<List<String>> layoutSupplier, @NotNull Supplier<Map<Character, Supplier<CommonIcon>>> layoutMapSupplier) {
+    public MenuLayout(@NotNull Supplier<List<String>> layoutSupplier, @NotNull Supplier<Map<Character, Supplier<Icon>>> layoutMapSupplier) {
         this(layoutSupplier.get(), layoutMapSupplier.get());
     }
 
-    public MenuLayout(@NotNull List<String> layout, @NotNull Map<Character, Supplier<CommonIcon>> layoutMap) {
+    public MenuLayout(@NotNull List<String> layout, @NotNull Map<Character, Supplier<Icon>> layoutMap) {
         this.layout = layout;
         this.layoutMap = layoutMap;
     }
@@ -41,11 +41,11 @@ public class MenuLayout {
         return this;
     }
 
-    public Map<Character, Supplier<CommonIcon>> layoutMap() {
+    public Map<Character, Supplier<Icon>> layoutMap() {
         return layoutMap;
     }
 
-    public MenuLayout setLayoutMap(@NotNull Map<Character, Supplier<CommonIcon>> layoutMap) {
+    public MenuLayout setLayoutMap(@NotNull Map<Character, Supplier<Icon>> layoutMap) {
         this.layoutMap = layoutMap;
         return this;
     }

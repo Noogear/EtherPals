@@ -1,6 +1,5 @@
 package cn.etherPals.util;
 
-
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -9,10 +8,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -32,23 +34,30 @@ public class SkinUtil {
             .build(new CacheLoader<>() {
                 @Override
                 public @NotNull PlayerProfile load(@NotNull String key) throws MalformedURLException {
-                    Optional<URL> url = Validate.getURL(key);
-                    if (url.isPresent()) {
-                        return getProfileByURL(url.get());
-                    }
-
-                    if (MOJANG_SHA256_APPROX_PATTERN.matcher(key).matches()) {
-                        return getProfileByURL("https://textures.minecraft.net/texture/" + key);
-                    }
-
-                    if (BASE64_PATTERN.matcher(key).matches()) {
-                        return getProfileByBase64(key);
-                    }
-
-                    Optional<UUID> uuid = Validate.getUUID(key);
-                    return uuid.map(SkinUtil::getProfileByUUID).orElseGet(() -> getProfileByName(key));
+                    return getProfileByString(key);
                 }
             });
+
+    public static PlayerProfile getProfileByString(@NotNull String key) {
+        Optional<URL> url = Validate.getURL(key);
+        if (url.isPresent()) {
+            return getProfileByURL(url.get());
+        }
+
+        if (MOJANG_SHA256_APPROX_PATTERN.matcher(key).matches()) {
+            return getProfileByURL("https://textures.minecraft.net/texture/" + key);
+        }
+
+        if (BASE64_PATTERN.matcher(key).matches()) {
+            return getProfileByBase64(key);
+        }
+
+        Optional<UUID> uuid = Validate.getUUID(key);
+        if (uuid.isPresent()) {
+            return getProfileByUUID(uuid.get());
+        }
+        return getProfileByName(key);
+    }
 
     private static @NotNull PlayerProfile getProfileByName(@NotNull String key) {
         Player player = Bukkit.getPlayer(key);
@@ -88,9 +97,22 @@ public class SkinUtil {
 
     private static @NotNull PlayerProfile getProfileByURL(String url) {
         try {
-            return getProfileByURL(new URL(url));
+            return getProfileByURL(URI.create(url).toURL());
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static ItemMeta setSkullSkin(@NotNull ItemMeta itemMeta, String key) {
+        if (!(itemMeta instanceof SkullMeta skullMeta)) {
+            return itemMeta;
+        }
+        try {
+            skullMeta.setPlayerProfile(CACHE.get(key));
+            return skullMeta;
+        } catch (Exception e) {
+            XLogger.err(e.getMessage());
+            return itemMeta;
         }
     }
 }

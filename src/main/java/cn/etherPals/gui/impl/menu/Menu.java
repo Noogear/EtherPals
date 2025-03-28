@@ -1,8 +1,8 @@
 package cn.etherPals.gui.impl.menu;
 
 import cn.etherPals.gui.impl.display.MenuDisplay;
-import cn.etherPals.gui.impl.icon.CommonIcon;
 import cn.etherPals.gui.impl.icon.Icon;
+import cn.etherPals.util.scheduler.XRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class Menu implements InventoryHolder {
-    protected final Map<Integer, CommonIcon> slotMap;
+    protected final Map<Integer, Icon> slotMap;
     protected final UUID playerId;
     protected final Map<Character, List<Integer>> layoutSlotMap;
     protected MenuDisplay display;
@@ -45,13 +45,17 @@ public class Menu implements InventoryHolder {
         return null;
     }
 
-    public Menu openMenu() {
-        if (inventoryCache == null)
-            this.inventoryCache = getInventory();
-        playerOpt().ifPresent(player -> {
-            player.openInventory(inventoryCache);
+    public void openMenuAsync() {
+        XRunnable.getScheduler().async(()->{
+            if (inventoryCache == null){
+                this.inventoryCache = getInventory();
+            }
+            XRunnable.getScheduler().sync(()->{
+                playerOpt().ifPresent(player -> {
+                    player.openInventory(inventoryCache);
+                });
+            });
         });
-        return this;
     }
 
     public Icon onClick(InventoryClickEvent event) {

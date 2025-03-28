@@ -2,6 +2,7 @@ package cn.etherPals.util;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Optional;
@@ -11,7 +12,7 @@ public class Validate {
 
     public static Optional<URL> getURL(@NotNull String input) {
         try {
-            return Optional.of(new URL(input));
+            return Optional.of(URI.create(input).toURL());
         } catch (Exception e) {
             return Optional.empty();
         }
