@@ -1,16 +1,18 @@
-package cn.etherPals.menu.impl;
+package cn.etherPals.gui.impl.icon;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-public class SingleIcon implements BaseIcon {
+public class SingleIcon implements Icon {
     protected Consumer<InventoryClickEvent> clickAction;
-    protected ItemStack display;
+    protected Supplier<ItemStack> display;
 
     public SingleIcon(ItemStack display, Consumer<InventoryClickEvent> clickAction) {
-        this.display = display;
+        this.display = () -> display;
         this.clickAction = clickAction;
     }
 
@@ -18,13 +20,12 @@ public class SingleIcon implements BaseIcon {
         this(display, null);
     }
 
-    @Override
-    public BaseIcon onClick(InventoryClickEvent event, int slot) {
-        return onClick(event);
+    public SingleIcon() {
+        this(null, null);
     }
 
     @Override
-    public BaseIcon onClick(InventoryClickEvent event) {
+    public Icon onClick(InventoryClickEvent event, int slot) {
         if (clickAction == null) {
             event.setCancelled(true);
             return this;
@@ -34,12 +35,7 @@ public class SingleIcon implements BaseIcon {
     }
 
     @Override
-    public ItemStack render() {
-        return display;
-    }
-
-    @Override
-    public ItemStack render(int slot) {
-        return display;
+    public @Nullable ItemStack render(int slot) {
+        return display.get();
     }
 }

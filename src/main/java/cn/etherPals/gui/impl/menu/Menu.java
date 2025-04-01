@@ -2,6 +2,7 @@ package cn.etherPals.gui.impl.menu;
 
 import cn.etherPals.gui.impl.display.MenuDisplay;
 import cn.etherPals.gui.impl.icon.Icon;
+import cn.etherPals.util.AdventureUtil;
 import cn.etherPals.util.scheduler.XRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -42,15 +43,22 @@ public class Menu implements InventoryHolder {
 
     @Override
     public @NotNull Inventory getInventory() {
-        return null;
+        int size = Math.min(display.layout().layout().size() * 9, 54);
+        Inventory inventory;
+        if (inventoryCache == null) {
+            inventory = Bukkit.createInventory(this, size, AdventureUtil.toComponent(display.title()));
+        } else {
+            inventory = inventoryCache;
+        }
+        return inventory;
     }
 
     public void openMenuAsync() {
-        XRunnable.getScheduler().async(()->{
-            if (inventoryCache == null){
+        XRunnable.getScheduler().async(() -> {
+            if (inventoryCache == null) {
                 this.inventoryCache = getInventory();
             }
-            XRunnable.getScheduler().sync(()->{
+            XRunnable.getScheduler().sync(() -> {
                 playerOpt().ifPresent(player -> {
                     player.openInventory(inventoryCache);
                 });
@@ -64,12 +72,13 @@ public class Menu implements InventoryHolder {
             event.setCancelled(true);
             return null;
         }
-        Icon icon = slotMap.get(event.getSlot());
+        int slot = event.getSlot();
+        Icon icon = slotMap.get(slot);
         if (icon == null) {
             event.setCancelled(true);
             return null;
         }
-        return icon.onClick(event);
+        return icon.onClick(event, slot);
     }
 
     public void onDrag(InventoryDragEvent event) {

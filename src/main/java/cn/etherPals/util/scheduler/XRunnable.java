@@ -7,17 +7,13 @@ import cn.etherPals.util.scheduler.task.ITaskWrapper;
 public abstract class XRunnable implements Runnable {
 
     private static IScheduler scheduler;
-    private static boolean isInitialized = false;
     protected ITaskWrapper taskWrapper;
 
     public static void init(Main plugin, boolean isFolia) {
-        if (isInitialized) return;
         scheduler = isFolia ? new FoliaScheduler(plugin) : new BukkitScheduler(plugin);
-        isInitialized = true;
     }
 
     public static IScheduler getScheduler() {
-        if (!isInitialized) throw new IllegalStateException("XRunnable not initialized");
         return scheduler;
     }
 
